@@ -1,0 +1,60 @@
+<?php
+require_once('../../tools/mypathdb.php');
+
+$sql = "SELECT * FROM roles ORDER BY id DESC";
+$resultado = mysqli_query($conn, $sql);
+?>
+<div class="card-body">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 10px">#</th>
+                <th>Nombre del Rol</th>
+                <th>Descripción</th>
+                <th>Accesos Permitidos</th> 
+                <th>Fecha</th>
+                <th style="width: 120px">Estatus</th>
+                <th style="width: 120px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $contador = 1;
+            while ($row = mysqli_fetch_assoc($resultado)) { 
+            ?>
+            <tr class="align-middle">
+                <td><?php echo $contador++; ?></td>
+                <td><?php echo $row['nombre']; ?></td>
+                <td><?php echo $row['descripcion']; ?></td>
+                <td>
+                    <?php
+                    if (!empty($row['accesos'])) {
+                        echo '<span class="badge border text-dark bg-light">' . $row['accesos'] . '</span>';
+                    } else {
+                    ?>
+                        <span class="badge text-bg-secondary">Sin accesos</span>
+                    <?php } ?>
+                </td>
+                <td><?php echo $row['fecha']; ?></td>
+                <td>
+                    <?php if ($row['status'] == '1') { ?>
+                        <span class="badge text-bg-success">Activo</span>
+                    <?php } else { ?>
+                        <span class="badge text-bg-danger">Inactivo</span>
+                    <?php } ?>
+                </td>
+                <td>
+                    <button class="btn btn-primary" onclick="Modificar(<?php echo $row['id']; ?>)" 
+                    data-bs-toggle="modal" data-bs-target="#modalRoles">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="Eliminar(<?php echo $row['id']; ?>)">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+<?php mysqli_close($conn); ?>
